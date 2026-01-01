@@ -1,8 +1,22 @@
 // app/page.tsx
 
 import Link from "next/link";
+import Image from "next/image";
+import { prisma } from "@/lib/prisma";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch a few images for hero visual
+  const heroImages = await prisma.package.findMany({
+    where: {
+      status: "ACTIVE",
+      imageUrl: { not: null },
+    },
+    select: {
+      imageUrl: true,
+    },
+    take: 4,
+  });
+
   return (
     <main className="space-y-12">
       {/* Hero Section */}
@@ -45,11 +59,30 @@ export default function HomePage() {
         </div>
 
         {/* Hero Visual */}
-        <div className="relative h-56 md:h-72 rounded-2xl border overflow-hidden flex items-center justify-center
-          bg-gradient-to-br from-sky-100 via-white to-emerald-100">
-          
+        <div
+          className="relative h-56 md:h-72 rounded-2xl border overflow-hidden flex items-center justify-center
+          bg-gradient-to-br from-sky-100 via-white to-emerald-100"
+        >
+          {/* DB Images */}
+          {heroImages.length > 0 && (
+            <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
+              {heroImages.map((img, i) => (
+                <div key={i} className="relative">
+                  <Image
+                    src={img.imageUrl!}
+                    alt="Travel destination"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Gradient Overlay (unchanged) */}
           <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#0ea5e9_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#22c55e_0,_transparent_55%)]" />
 
+          {/* Text Overlay (unchanged) */}
           <div className="relative z-10 text-center space-y-2 px-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
               Featured Journeys
@@ -162,6 +195,49 @@ export default function HomePage() {
           These are placeholder cards. Later we’ll pull real packages from the
           database and show dynamic pricing & tags here.
         </p>
+      </section>
+
+      {/* ⭐ Customer Reviews */}
+      <section className="space-y-6">
+        <h2 className="text-xl font-semibold text-slate-900">
+          What our travelers say
+        </h2>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              name: "Ankit Sharma",
+              place: "Delhi",
+              review:
+                "Seamless experience from booking to travel. Purbodoy handled everything perfectly.",
+            },
+            {
+              name: "Riya Das",
+              place: "Kolkata",
+              review:
+                "The itinerary was well-planned and stress-free. Highly recommended for family trips.",
+            },
+            {
+              name: "Arjun Mehta",
+              place: "Mumbai",
+              review:
+                "Great support and transparent pricing. Loved the overall experience!",
+            },
+          ].map((r) => (
+            <div
+              key={r.name}
+              className="rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition"
+            >
+              <p className="text-sm text-slate-700 leading-relaxed">
+                “{r.review}”
+              </p>
+              <p className="mt-3 text-xs font-semibold text-slate-900">
+                {r.name}
+              </p>
+              <p className="text-[11px] text-slate-500">{r.place}</p>
+            </div>
+          ))}
+        </div>
       </section>
     </main>
   );
