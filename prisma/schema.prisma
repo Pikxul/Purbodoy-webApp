@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------- ENUMS ----------------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PackageStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  CREATED
+  ATTEMPTED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  RAZORPAY
+  STRIPE
+}
+
+// ---------------- MODELS ----------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  phone         String?
+
+  // Profile
+  dateOfBirth   DateTime?
+  address       String?
+
+  role          Role      @default(USER)
+  whatsappOptIn Boolean   @default(false)
+  emailOptIn    Boolean   @default(true)
+
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  payments      Payment[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Package {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String         @unique
+  shortInfo    String
+  price        Int            // INR
+  location     String
+  state        String?
+  isFeatured   Boolean        @default(false)
+  status       PackageStatus  @default(ACTIVE)
+  imageUrl     String?
+
+  bookingItems BookingItem[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Booking {
+  id            String         @id @default(cuid())
+  userId        String
+  totalAmount   Int            // INR
+  status        BookingStatus  @default(PENDING_PAYMENT)
+
+  user          User           @relation(fields: [userId], references: [id])
+  items         BookingItem[]
+  payment       Payment?
+
+  createdAt     DateTime       @default(now())
+}
+
+model BookingItem {
+  id           String   @id @default(cuid())
+  bookingId    String
+  packageId    String
+  location     String
+  membersCount Int
+  pricePerHead Int
+
+  booking      Booking  @relation(fields: [bookingId], references: [id])
+  package      Package  @relation(fields: [packageId], references: [id])
+}
+
+model Payment {
+  id              String           @id @default(cuid())
+  bookingId       String           @unique
+  userId          String
+
+  provider        PaymentProvider
+  status          PaymentStatus    @default(CREATED)
+
+  amount          Int              // INR
+  currency        String           @default("INR")
+
+  // Razorpay specific
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+
+  booking         Booking          @relation(fields: [bookingId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

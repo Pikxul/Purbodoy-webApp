@@ -1,0 +1,26 @@
+import { prisma } from "../app/lib/prisma";
+
+async function main() {
+  console.log("🧹 Cleaning up dummy users...");
+
+  // ⚠️ Order matters (FK safety)
+  await prisma.bookingItem.deleteMany();
+  await prisma.booking.deleteMany();
+
+  await prisma.user.deleteMany({
+    where: {
+      role: { not: "ADMIN" }, // remove if you don't use ADMIN
+    },
+  });
+
+  console.log("✅ Dummy users deleted successfully");
+}
+
+main()
+  .catch((e) => {
+    console.error("❌ Cleanup failed", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
