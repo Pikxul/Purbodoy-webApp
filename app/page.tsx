@@ -177,9 +177,9 @@ export default async function HomePage() {
   ];
 
   return (
-    <main className="space-y-12">
+    <main className="">
       {/* Hero Section */}
-      <section className="mt-6 grid gap-8 md:grid-cols-2 md:items-center">
+      <section className="py-12 grid gap-8 md:grid-cols-2 md:items-center">
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
             Purbodoy Tours & Travels
@@ -255,10 +255,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HighlightsSection />
+      {/* Highlights Section */}
+      <section className="py-12">
+        <HighlightsSection />
+      </section>
 
       {/* Popular Destinations — Enhanced for Mobile */}
-      <section className="space-y-4 pb-10">
+      <section className="py-12 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-slate-900">
             Popular Destinations
@@ -303,7 +306,7 @@ export default async function HomePage() {
       </section>
 
       {/* Reviews — Horizontal Sliding Carousel */}
-      <section className="space-y-6">
+      <section className="py-12 space-y-6">
         <h2 className="text-xl font-semibold text-slate-900">
           What our travelers say
         </h2>
