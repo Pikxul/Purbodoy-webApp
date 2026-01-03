@@ -2,11 +2,8 @@
 .reviews-carousel-container {
   position: relative;
   overflow: hidden;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem 0;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
