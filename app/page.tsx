@@ -21,15 +21,12 @@ interface Review {
   name: string;
   place: string;
   review: string;
-<<<<<<< HEAD
   destination: string;
   rating: number;
   tripDate: string;
   tripDuration: string;
   tripType: string;
   verified: boolean;
-=======
->>>>>>> 27747355e41da59829cea6cb6b9f93b581c52322
 }
 
 /**
@@ -66,16 +63,11 @@ export default async function HomePage() {
     take: 6,
   });
 
-<<<<<<< HEAD
   // Static reviews data with enhanced parameters
-=======
-  // Static reviews data
->>>>>>> 27747355e41da59829cea6cb6b9f93b581c52322
   const reviews: Review[] = [
     {
       name: "Ankit Sharma",
       place: "Delhi",
-<<<<<<< HEAD
       destination: "Goa",
       rating: 5,
       tripDate: "December 2024",
@@ -84,15 +76,10 @@ export default async function HomePage() {
       verified: true,
       review:
         "Seamless experience from booking to travel. Purbodoy handled everything perfectly. The beach resorts were amazing and the local sightseeing was well organized. Highly recommend for family trips!",
-=======
-      review:
-        "Seamless experience from booking to travel. Purbodoy handled everything perfectly.",
->>>>>>> 27747355e41da59829cea6cb6b9f93b581c52322
     },
     {
       name: "Riya Das",
       place: "Kolkata",
-<<<<<<< HEAD
       destination: "Himachal Pradesh",
       rating: 5,
       tripDate: "November 2024",
@@ -101,15 +88,10 @@ export default async function HomePage() {
       verified: true,
       review:
         "The itinerary was well-planned and stress-free. Highly recommended. We explored Shimla, Manali, and the beautiful valleys. The accommodation was top-notch and the guides were very knowledgeable.",
-=======
-      review:
-        "The itinerary was well-planned and stress-free. Highly recommended.",
->>>>>>> 27747355e41da59829cea6cb6b9f93b581c52322
     },
     {
       name: "Arjun Mehta",
       place: "Mumbai",
-<<<<<<< HEAD
       destination: "Rajasthan",
       rating: 4,
       tripDate: "October 2024",
@@ -190,10 +172,6 @@ export default async function HomePage() {
       verified: true,
       review:
         "Darjeeling and Sikkim were paradise for photographers! The tea gardens, monasteries, and mountain views were incredible. Purbodoy helped us get the best vantage points and arranged photography workshops.",
-=======
-      review:
-        "Great support and transparent pricing. Loved it!",
->>>>>>> 27747355e41da59829cea6cb6b9f93b581c52322
     },
   ];
 
@@ -241,7 +219,7 @@ export default async function HomePage() {
         {/* Hero Visual — CSS Carousel */}
         <div className="relative h-56 md:h-72 rounded-2xl border overflow-hidden carousel-container">
           <input type="checkbox" id="carousel-pause" className="carousel-pause-input" />
-          
+
           <div className="carousel-track">
             {heroImages.map((img, i) => (
               <div key={i} className="carousel-slide">
