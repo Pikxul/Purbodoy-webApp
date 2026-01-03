@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import "./reviews-carousel.css";
+import HighlightsSection from "./components/HighlightsSection";
 
 // Type definitions for better type safety
 interface HeroImage {
@@ -218,8 +219,6 @@ export default async function HomePage() {
 
         {/* Hero Visual — CSS Carousel */}
         <div className="relative h-56 md:h-72 rounded-2xl border overflow-hidden carousel-container">
-          <input type="checkbox" id="carousel-pause" className="carousel-pause-input" />
-
           <div className="carousel-track">
             {heroImages.map((img, i) => (
               <div key={i} className="carousel-slide">
@@ -234,7 +233,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Controls (Indicators + Play/Pause) */}
+          {/* Controls (Indicators only) */}
           <div className="carousel-controls">
             {/* Slide Indicators */}
             <div className="carousel-indicators">
@@ -242,12 +241,6 @@ export default async function HomePage() {
                 <div key={i} className="carousel-indicator" />
               ))}
             </div>
-
-            {/* Play/Pause Button */}
-            <label htmlFor="carousel-pause" className="carousel-play-pause">
-              <span className="play-icon">▶</span>
-              <span className="pause-icon">⏸</span>
-            </label>
           </div>
 
           {/* Text Overlay */}
@@ -262,44 +255,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Highlights Section */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-slate-900">
-          Why travel with Purbodoy?
-        </h2>
+      <HighlightsSection />
 
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">
-              India-Only Experts
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Focused purely on domestic trips across India.
-            </p>
-          </div>
-
-          <div className="rounded-xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">
-              Curated Packages
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Thoughtfully designed itineraries with transparent pricing.
-            </p>
-          </div>
-
-          <div className="rounded-xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">
-              Assisted Booking
-            </h3>
-            <p className="mt-1 text-xs text-slate-600">
-              Human support when you need it.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Popular Destinations — FIXED */}
+      {/* Popular Destinations — Enhanced for Mobile */}
       <section className="space-y-4 pb-10">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-slate-900">
@@ -314,11 +272,11 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div className="popular-destinations-container">
           {popularPackages.map((pkg) => (
             <div
               key={pkg.id}
-              className="rounded-xl overflow-hidden border bg-white shadow-sm hover:shadow-md transition"
+              className="popular-card rounded-xl overflow-hidden border bg-white shadow-sm hover:shadow-md transition"
             >
               <div className="relative h-40">
                 <Image
@@ -337,6 +295,10 @@ export default async function HomePage() {
               </div>
             </div>
           ))}
+          {/* Swipe hint for mobile */}
+          <div className="popular-swipe-hint flex-shrink-0 flex items-center justify-center w-16 text-slate-400 text-sm md:hidden">
+            →
+          </div>
         </div>
       </section>
 
@@ -456,6 +418,7 @@ export default async function HomePage() {
         /* Carousel container setup */
         .carousel-container {
           position: relative;
+          border: none;
         }
 
         /* Hidden inputs for controls */
@@ -566,8 +529,8 @@ export default async function HomePage() {
           z-index: 20;
           display: flex;
           align-items: center;
-          gap: 1rem;
-          padding: 0.5rem 1rem;
+          justify-content: center;
+          padding: 0.5rem;
         }
 
         /* Indicator dots container */
@@ -667,6 +630,61 @@ export default async function HomePage() {
 
         .carousel-pause-input:checked ~ .carousel-controls .carousel-play-pause .pause-icon {
           display: block;
+        }
+
+        /* Popular Destinations Horizontal Scroll for Mobile */
+        .popular-destinations-container {
+          display: flex;
+          gap: 1rem;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding-bottom: 0.5rem;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .popular-destinations-container::-webkit-scrollbar {
+          display: none;
+        }
+
+        .popular-destinations-container {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        /* Card styling for horizontal layout */
+        .popular-card {
+          flex-shrink: 0;
+          width: 280px;
+          scroll-snap-align: start;
+        }
+
+        /* Desktop grid fallback */
+        @media (min-width: 768px) {
+          .popular-destinations-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            overflow-x: visible;
+            gap: 1rem;
+          }
+
+          .popular-card {
+            width: auto;
+          }
+
+          .popular-swipe-hint {
+            display: none;
+          }
+        }
+
+        /* Swipe hint animation */
+        .popular-swipe-hint {
+          animation: swipe-hint 2s ease-in-out infinite;
+        }
+
+        @keyframes swipe-hint {
+          0%, 100% { opacity: 0.5; transform: translateX(0); }
+          50% { opacity: 1; transform: translateX(5px); }
         }
       `}</style>
     </main>
