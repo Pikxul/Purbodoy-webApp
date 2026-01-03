@@ -3,10 +3,41 @@
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
+import "./reviews-carousel.css";
 
+// Type definitions for better type safety
+interface HeroImage {
+  imageUrl: string | null;
+}
+
+interface PopularPackage {
+  id: string;
+  title: string;
+  location: string;
+  imageUrl: string | null;
+}
+
+interface Review {
+  name: string;
+  place: string;
+  review: string;
+  destination: string;
+  rating: number;
+  tripDate: string;
+  tripDuration: string;
+  tripType: string;
+  verified: boolean;
+}
+
+/**
+ * HomePage component for the Purbodoy Tours & Travels website.
+ * Renders the main homepage with hero carousel, highlights, popular destinations, and reviews.
+ *
+ * @returns {JSX.Element} The homepage JSX element.
+ */
 export default async function HomePage() {
-  // HERO: 6 images
-  const heroImages = await prisma.package.findMany({
+  // Fetch hero images for the carousel
+  const heroImages: HeroImage[] = await prisma.package.findMany({
     where: {
       status: "ACTIVE",
       imageUrl: { not: null },
@@ -17,8 +48,8 @@ export default async function HomePage() {
     take: 6,
   });
 
-  // POPULAR DESTINATIONS
-  const popularPackages = await prisma.package.findMany({
+  // Fetch popular destination packages
+  const popularPackages: PopularPackage[] = await prisma.package.findMany({
     where: {
       status: "ACTIVE",
       imageUrl: { not: null },
@@ -29,8 +60,120 @@ export default async function HomePage() {
       location: true,
       imageUrl: true,
     },
-    take: 4,
+    take: 6,
   });
+
+  // Static reviews data with enhanced parameters
+  const reviews: Review[] = [
+    {
+      name: "Ankit Sharma",
+      place: "Delhi",
+      destination: "Goa",
+      rating: 5,
+      tripDate: "December 2024",
+      tripDuration: "5 Days",
+      tripType: "Family",
+      verified: true,
+      review:
+        "Seamless experience from booking to travel. Purbodoy handled everything perfectly. The beach resorts were amazing and the local sightseeing was well organized. Highly recommend for family trips!",
+    },
+    {
+      name: "Riya Das",
+      place: "Kolkata",
+      destination: "Himachal Pradesh",
+      rating: 5,
+      tripDate: "November 2024",
+      tripDuration: "7 Days",
+      tripType: "Friends",
+      verified: true,
+      review:
+        "The itinerary was well-planned and stress-free. Highly recommended. We explored Shimla, Manali, and the beautiful valleys. The accommodation was top-notch and the guides were very knowledgeable.",
+    },
+    {
+      name: "Arjun Mehta",
+      place: "Mumbai",
+      destination: "Rajasthan",
+      rating: 4,
+      tripDate: "October 2024",
+      tripDuration: "6 Days",
+      tripType: "Couple",
+      verified: true,
+      review:
+        "Great support and transparent pricing. Loved it! The palaces and forts were breathtaking. The cultural experience was authentic and the food was delicious. Minor delay in one transfer but overall excellent.",
+    },
+    {
+      name: "Priya Singh",
+      place: "Bangalore",
+      destination: "Kerala",
+      rating: 5,
+      tripDate: "September 2024",
+      tripDuration: "8 Days",
+      tripType: "Solo",
+      verified: true,
+      review:
+        "Backwaters, houseboats, and Ayurvedic treatments - everything was perfect! Purbodoy made my solo trip safe and memorable. The local experiences were authentic and the photography opportunities were endless.",
+    },
+    {
+      name: "Vikram Patel",
+      place: "Ahmedabad",
+      destination: "Northeast India",
+      rating: 5,
+      tripDate: "August 2024",
+      tripDuration: "10 Days",
+      tripType: "Adventure",
+      verified: true,
+      review:
+        "Unforgettable adventure through Meghalaya, Assam, and Arunachal. The biodiversity was incredible and the tribal culture was fascinating. Purbodoy's local guides made this trip truly special.",
+    },
+    {
+      name: "Sneha Kapoor",
+      place: "Pune",
+      destination: "Ladakh",
+      rating: 5,
+      tripDate: "July 2024",
+      tripDuration: "9 Days",
+      tripType: "Adventure",
+      verified: true,
+      review:
+        "Ladakh exceeded all expectations! The high-altitude lakes, monasteries, and landscapes were breathtaking. Purbodoy arranged everything perfectly including acclimatization stops. The local culture and cuisine were amazing.",
+    },
+    {
+      name: "Rahul Verma",
+      place: "Jaipur",
+      destination: "Andaman & Nicobar",
+      rating: 5,
+      tripDate: "June 2024",
+      tripDuration: "7 Days",
+      tripType: "Family",
+      verified: true,
+      review:
+        "Perfect family getaway to the Andamans! Crystal clear waters, pristine beaches, and amazing snorkeling. The resorts were luxurious and the island hopping was well organized. Kids loved the water activities!",
+    },
+    {
+      name: "Kavita Jain",
+      place: "Chennai",
+      destination: "Uttarakhand",
+      rating: 4,
+      tripDate: "May 2024",
+      tripDuration: "6 Days",
+      tripType: "Spiritual",
+      verified: true,
+      review:
+        "Spiritual journey to the Himalayas was transformative. Visited Rishikesh, Haridwar, and several ashrams. The accommodation was comfortable and the local guides were very knowledgeable about spiritual practices.",
+    },
+    {
+      name: "Amit Kumar",
+      place: "Hyderabad",
+      destination: "Sikkim & Darjeeling",
+      rating: 5,
+      tripDate: "April 2024",
+      tripDuration: "8 Days",
+      tripType: "Photography",
+      verified: true,
+      review:
+        "Darjeeling and Sikkim were paradise for photographers! The tea gardens, monasteries, and mountain views were incredible. Purbodoy helped us get the best vantage points and arranged photography workshops.",
+    },
+  ];
 
   return (
     <main className="space-y-12">
@@ -125,11 +268,6 @@ export default async function HomePage() {
           Why travel with Purbodoy?
         </h2>
 
-        <p className="text-sm text-slate-600 max-w-2xl">
-          This section will later be powered from CMS / admin, but for now
-          we'll keep simple highlight cards to impress the client and structure
-          the page.
-        </p>
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-xl border bg-white p-4 shadow-sm">
@@ -202,56 +340,131 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Reviews — untouched */}
+      {/* Reviews — Horizontal Sliding Carousel */}
       <section className="space-y-6">
         <h2 className="text-xl font-semibold text-slate-900">
           What our travelers say
         </h2>
 
-        <div className="grid gap-4 md:grid-cols-3 text-slate-600">
-          {[
-            {
-              name: "Ankit Sharma",
-              place: "Delhi",
-              review:
-                "Seamless experience from booking to travel. Purbodoy handled everything perfectly.",
-            },
-            {
-              name: "Riya Das",
-              place: "Kolkata",
-              review:
-                "The itinerary was well-planned and stress-free. Highly recommended.",
-            },
-            {
-              name: "Arjun Mehta",
-              place: "Mumbai",
-              review:
-                "Great support and transparent pricing. Loved it!",
-            },
-          ].map((r) => (
-            <div
-              key={r.name}
-              className="rounded-xl border bg-white p-4 shadow-sm"
-            >
-              <p className="text-sm text-slate-700">"{r.review}"</p>
-              <p className="mt-3 text-xs font-semibold">{r.name}</p>
-              <p className="text-[11px] text-slate-500">{r.place}</p>
+        <div className="reviews-carousel-container">
+          <div className="reviews-carousel-track">
+            {/* Duplicate reviews for seamless continuous loop */}
+            {[...reviews, ...reviews].map((r, index) => (
+              <div key={`${r.name}-${index}`} className="review-card">
+                <div className="review-header">
+                  <div className="quote-icon">
+                    <svg className="w-6 h-6 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z" />
+                    </svg>
+                  </div>
+                  {r.verified && (
+                    <div className="verified-badge">
+                      <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      </svg>
+                      <span className="text-xs text-green-600 font-medium">Verified</span>
+                    </div>
+                  )}
+                </div>
+                <div className="stars">
+                  {[...Array(r.rating)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="review-text">"{r.review}"</p>
+
+                <div className="review-footer">
+                  <div className="reviewer-info">
+                    <p className="reviewer-name">{r.name}</p>
+                    <p className="reviewer-place">{r.place}</p>
+                  </div>
+                  <div className="trip-destination">
+                    <p className="trip-label">Trip to</p>
+                    <p className="font-semibold">{r.destination}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Customer Trust Parameters */}
+        <div className="customer-trust-section">
+          <div className="trust-metrics">
+            <div className="metric-item">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <div className="metric-number">10,000+</div>
+              <div className="metric-label">Happy Travelers</div>
             </div>
-          ))}
+            <div className="metric-item">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+              <div className="metric-number">200+</div>
+              <div className="metric-label">Destinations</div>
+            </div>
+            <div className="metric-item">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <div className="metric-number">15+</div>
+              <div className="metric-label">Years Of Experience</div>
+            </div>
+            <div className="metric-item">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M16 4h-2V2h-4v2H8C5.79 4 4 5.79 4 8v10c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V8c0-2.21-1.79-4-4-4zm-1 10H9v-2h6v2zm0-4H9V8h6v2z"/>
+                </svg>
+              </div>
+              <div className="metric-number">98%</div>
+              <div className="metric-label">Satisfaction Rate</div>
+            </div>
+            <div className="metric-item rating-highlight">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </div>
+              <div className="metric-number">4.8</div>
+              <div className="metric-label">Average Rating</div>
+            </div>
+            <div className="metric-item">
+              <div className="metric-icon">
+                <svg className="w-12 h-12 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              </div>
+              <div className="metric-number">100+</div>
+              <div className="metric-label">Customer Assistants</div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* CSS */}
+      {/* Inline CSS for carousel functionality */}
       <style>{`
+        /* Carousel container setup */
         .carousel-container {
           position: relative;
         }
 
+        /* Hidden inputs for controls */
         .carousel-pause-input,
         .carousel-radio {
           display: none;
         }
 
+        /* Main carousel track with auto-slide animation */
         .carousel-track {
           position: absolute;
           inset: 0;
@@ -260,6 +473,7 @@ export default async function HomePage() {
           animation: carousel-auto-slide 30s infinite;
         }
 
+        /* Keyframe animation for auto-sliding */
         @keyframes carousel-auto-slide {
           0%, 16.66% { transform: translateX(0%); }
           16.67%, 33.33% { transform: translateX(-100%); }
@@ -269,44 +483,45 @@ export default async function HomePage() {
           83.34%, 100% { transform: translateX(-500%); }
         }
 
+        /* Individual slide styling */
         .carousel-slide {
           position: relative;
           min-width: 100%;
           flex-shrink: 0;
         }
 
-        /* Manual control via radio buttons */
-        #slide-0:checked ~ .carousel-track { 
+        /* Manual slide controls via radio buttons */
+        #slide-0:checked ~ .carousel-track {
           transform: translateX(0%);
           animation: none;
         }
-        #slide-1:checked ~ .carousel-track { 
+        #slide-1:checked ~ .carousel-track {
           transform: translateX(-100%);
           animation: none;
         }
-        #slide-2:checked ~ .carousel-track { 
+        #slide-2:checked ~ .carousel-track {
           transform: translateX(-200%);
           animation: none;
         }
-        #slide-3:checked ~ .carousel-track { 
+        #slide-3:checked ~ .carousel-track {
           transform: translateX(-300%);
           animation: none;
         }
-        #slide-4:checked ~ .carousel-track { 
+        #slide-4:checked ~ .carousel-track {
           transform: translateX(-400%);
           animation: none;
         }
-        #slide-5:checked ~ .carousel-track { 
+        #slide-5:checked ~ .carousel-track {
           transform: translateX(-500%);
           animation: none;
         }
 
-        /* Pause animation when paused */
+        /* Pause animation state */
         .carousel-pause-input:checked ~ .carousel-track {
           animation-play-state: paused;
         }
 
-        /* Navigation Buttons */
+        /* Navigation button positioning */
         .carousel-nav-prev,
         .carousel-nav-next {
           position: absolute;
@@ -324,6 +539,7 @@ export default async function HomePage() {
           right: 1rem;
         }
 
+        /* Navigation button styling */
         .carousel-nav-button {
           background: rgba(0, 0, 0, 0.5);
           color: white;
@@ -341,7 +557,7 @@ export default async function HomePage() {
           background: rgba(0, 0, 0, 0.7);
         }
 
-        /* Controls Container */
+        /* Controls container at bottom */
         .carousel-controls {
           position: absolute;
           bottom: 1rem;
@@ -354,11 +570,13 @@ export default async function HomePage() {
           padding: 0.5rem 1rem;
         }
 
+        /* Indicator dots container */
         .carousel-indicators {
           display: flex;
           gap: 0.5rem;
         }
 
+        /* Individual indicator styling */
         .carousel-indicator {
           width: 0.5rem;
           height: 0.5rem;
@@ -373,18 +591,19 @@ export default async function HomePage() {
           background: rgba(255, 255, 255, 0.75);
         }
 
-        /* Auto-play indicator animation */
+        /* Progress animation for indicators */
         @keyframes indicator-progress {
-          0%, 16.66% { 
+          0%, 16.66% {
             background: white;
             width: 2rem;
           }
-          16.67%, 100% { 
+          16.67%, 100% {
             background: rgba(255, 255, 255, 0.5);
             width: 0.5rem;
           }
         }
 
+        /* Apply progress animation to each indicator with delay */
         .carousel-indicator:nth-child(1) {
           animation: indicator-progress 30s infinite;
           animation-delay: 0s;
@@ -415,10 +634,12 @@ export default async function HomePage() {
           animation-delay: 25s;
         }
 
+        /* Pause indicator animations when paused */
         .carousel-pause-input:checked ~ .carousel-controls .carousel-indicator {
           animation-play-state: paused;
         }
 
+        /* Play/pause button styling */
         .carousel-play-pause {
           display: flex;
           align-items: center;
@@ -435,6 +656,7 @@ export default async function HomePage() {
           transform: scale(1.1);
         }
 
+        /* Toggle play/pause icons */
         .carousel-play-pause .pause-icon {
           display: none;
         }

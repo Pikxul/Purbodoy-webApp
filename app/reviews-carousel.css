@@ -1,0 +1,273 @@
+/* Reviews Carousel - Full Page Width Continuous Horizontal Sliding */
+.reviews-carousel-container {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.reviews-carousel-track {
+  display: flex;
+  gap: 2rem;
+  animation: reviews-carousel-continuous-slide 25s linear infinite;
+  width: calc(360px * 8 + 2rem * 7); /* 4 cards visible + 4 duplicates for seamless loop */
+  padding: 0 2rem;
+}
+
+@keyframes reviews-carousel-continuous-slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Move by half the width to create seamless loop */
+}
+
+.reviews-carousel-container:hover .reviews-carousel-track {
+  animation-play-state: paused;
+}
+
+/* Enhanced Review Card Styles - Compact Size */
+.review-card {
+  flex: 0 0 220px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+}
+
+.review-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #3b82f6;
+  transform: translateY(-4px);
+}
+
+.review-card .review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.review-card .quote-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.review-card .verified-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #dcfce7;
+  padding: 0.15rem 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #bbf7d0;
+}
+
+.review-card .stars {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-card .stars svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.review-card .review-text {
+  font-size: 0.75rem;
+  color: #374151;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.review-card .review-meta {
+  margin-bottom: 0.75rem;
+}
+
+.review-card .trip-details {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.review-card .trip-type,
+.review-card .trip-duration,
+.review-card .trip-date {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background: #f8fafc;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.review-card .review-footer {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.review-card .reviewer-info {
+  flex: 1;
+}
+
+.review-card .reviewer-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.1rem;
+}
+
+.review-card .reviewer-place {
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.review-card .trip-destination {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.review-card .trip-label {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  margin-bottom: 0.125rem;
+}
+
+.review-card .trip-destination .font-semibold {
+  font-size: 0.875rem;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Customer Trust Parameters Section */
+.customer-trust-section {
+  margin-top: 3rem;
+  padding: 2rem 0;
+}
+
+.trust-metrics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 140px;
+}
+
+.metric-item:hover {
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.metric-icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.metric-item:hover .metric-icon {
+  transform: scale(1.1);
+}
+
+.metric-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.rating-highlight .metric-number {
+  color: #000000;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .trust-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    max-width: none;
+  }
+
+  .metric-item {
+    flex: none;
+    width: 100%;
+    padding: 1rem 0.5rem;
+    min-height: 100px;
+    text-align: center;
+  }
+
+  .metric-number {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-label {
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .metric-icon {
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
