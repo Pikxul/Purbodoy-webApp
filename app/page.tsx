@@ -29,7 +29,7 @@ export default async function HomePage() {
       location: true,
       imageUrl: true,
     },
-    take: 3,
+    take: 4,
   });
 
   return (

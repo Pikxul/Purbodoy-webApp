@@ -145,7 +145,7 @@ export default function CheckoutPage() {
               Billing Details
             </h2>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 text-slate-700">
               {[
                 ["firstName", "First Name"],
                 ["lastName", "Last Name"],
@@ -173,12 +173,12 @@ export default function CheckoutPage() {
               placeholder="Address"
               value={billing.address}
               onChange={(e) => handleChange("address", e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600
               placeholder:text-slate-600 placeholder:font-medium
               focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none"
             />
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-3 text-slate-700">
               {[
                 ["country", "Country"],
                 ["state", "State"],
