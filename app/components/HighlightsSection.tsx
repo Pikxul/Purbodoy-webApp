@@ -1,19 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function HighlightsSection() {
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [flippedCard, setFlippedCard] = useState<number | null>(null);
+  const touchHandled = useRef(false);
 
-  const toggleCard = (index: number) => {
-    const newExpanded = new Set(expandedCards);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
-    } else {
-      newExpanded.add(index);
-    }
-    setExpandedCards(newExpanded);
-  };
+
 
   const highlights = [
     {
@@ -86,39 +79,85 @@ export default function HighlightsSection() {
   ];
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4" onClick={(e) => {
+      // Flip back all cards when clicking outside on mobile
+      if (flippedCard !== null) {
+        setFlippedCard(null);
+      }
+    }}>
       <h2 className="text-xl font-semibold text-slate-900">
         Why travel with Purbodoy?
       </h2>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3" onClick={(e) => e.stopPropagation()}>
         {highlights.map((highlight, index) => (
           <div
             key={index}
-            className="highlight-card rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col justify-center min-h-[200px]"
-            onClick={() => toggleCard(index)}
+            className="highlight-card-container cursor-pointer group"
+            onTouchStart={() => {
+              touchHandled.current = true;
+              setFlippedCard(flippedCard === index ? null : index);
+            }}
+            onClick={() => {
+              if (touchHandled.current) {
+                touchHandled.current = false;
+                return;
+              }
+              setFlippedCard(flippedCard === index ? null : index);
+            }}
+            onMouseEnter={() => setFlippedCard(index)}
+            onMouseLeave={() => setFlippedCard(null)}
+            style={{ perspective: '1000px', touchAction: 'manipulation' }}
           >
-            <div className="flex flex-col items-center text-center space-y-3">
-              <div className={`highlight-icon p-3 rounded-lg ${highlight.iconBg}`}>
-                {highlight.icon}
+            <div
+              className={`highlight-card relative w-full h-48 transition-transform duration-700 preserve-3d ${
+                flippedCard === index ? 'rotate-y-180' : ''
+              }`}
+              style={{ transformStyle: 'preserve-3d' }}
+            >
+              {/* Front of card */}
+              <div
+                className="absolute inset-0 w-full h-full backface-hidden rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-center items-center text-center space-y-3"
+                style={{ backfaceVisibility: 'hidden' }}
+              >
+                <div className={`highlight-icon p-3 rounded-lg ${highlight.iconBg}`}>
+                  {highlight.icon}
+                </div>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  {highlight.title}
+                </h3>
+                <p className="text-xs text-slate-600">
+                  {highlight.description}
+                </p>
               </div>
-              <h3 className="text-sm font-semibold text-slate-900">
-                {highlight.title}
-              </h3>
-              <p className="text-xs text-slate-600 text-center">
-                {highlight.description}
-              </p>
-            </div>
-            <div className={`highlight-reveal mt-3 transition-opacity duration-300 text-center ${
-              expandedCards.has(index) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}>
-              <p className="text-xs text-slate-500">
-                {highlight.reveal}
-              </p>
+
+              {/* Back of card */}
+              <div
+                className="absolute inset-0 w-full h-full backface-hidden rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-center items-center text-center rotate-y-180"
+                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+              >
+                <p className="text-xs text-slate-500">
+                  {highlight.reveal}
+                </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      <style jsx>{`
+        .preserve-3d {
+          transform-style: preserve-3d;
+        }
+
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+      `}</style>
     </section>
   );
 }
