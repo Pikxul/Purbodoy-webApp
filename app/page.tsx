@@ -4,9 +4,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 
+// Type definitions for better type safety
+interface HeroImage {
+  imageUrl: string | null;
+}
+
+interface PopularPackage {
+  id: string;
+  title: string;
+  location: string;
+  imageUrl: string | null;
+}
+
+interface Review {
+  name: string;
+  place: string;
+  review: string;
+}
+
+/**
+ * HomePage component for the Purbodoy Tours & Travels website.
+ * Renders the main homepage with hero carousel, highlights, popular destinations, and reviews.
+ *
+ * @returns {JSX.Element} The homepage JSX element.
+ */
 export default async function HomePage() {
-  // HERO: 6 images
-  const heroImages = await prisma.package.findMany({
+  // Fetch hero images for the carousel
+  const heroImages: HeroImage[] = await prisma.package.findMany({
     where: {
       status: "ACTIVE",
       imageUrl: { not: null },
@@ -17,8 +41,8 @@ export default async function HomePage() {
     take: 6,
   });
 
-  // POPULAR DESTINATIONS
-  const popularPackages = await prisma.package.findMany({
+  // Fetch popular destination packages
+  const popularPackages: PopularPackage[] = await prisma.package.findMany({
     where: {
       status: "ACTIVE",
       imageUrl: { not: null },
@@ -31,6 +55,28 @@ export default async function HomePage() {
     },
     take: 4,
   });
+
+  // Static reviews data
+  const reviews: Review[] = [
+    {
+      name: "Ankit Sharma",
+      place: "Delhi",
+      review:
+        "Seamless experience from booking to travel. Purbodoy handled everything perfectly.",
+    },
+    {
+      name: "Riya Das",
+      place: "Kolkata",
+      review:
+        "The itinerary was well-planned and stress-free. Highly recommended.",
+    },
+    {
+      name: "Arjun Mehta",
+      place: "Mumbai",
+      review:
+        "Great support and transparent pricing. Loved it!",
+    },
+  ];
 
   return (
     <main className="space-y-12">
@@ -241,17 +287,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CSS */}
+      {/* Inline CSS for carousel functionality */}
       <style>{`
+        /* Carousel container setup */
         .carousel-container {
           position: relative;
         }
 
+        /* Hidden inputs for controls */
         .carousel-pause-input,
         .carousel-radio {
           display: none;
         }
 
+        /* Main carousel track with auto-slide animation */
         .carousel-track {
           position: absolute;
           inset: 0;
@@ -260,6 +309,7 @@ export default async function HomePage() {
           animation: carousel-auto-slide 30s infinite;
         }
 
+        /* Keyframe animation for auto-sliding */
         @keyframes carousel-auto-slide {
           0%, 16.66% { transform: translateX(0%); }
           16.67%, 33.33% { transform: translateX(-100%); }
@@ -269,44 +319,45 @@ export default async function HomePage() {
           83.34%, 100% { transform: translateX(-500%); }
         }
 
+        /* Individual slide styling */
         .carousel-slide {
           position: relative;
           min-width: 100%;
           flex-shrink: 0;
         }
 
-        /* Manual control via radio buttons */
-        #slide-0:checked ~ .carousel-track { 
+        /* Manual slide controls via radio buttons */
+        #slide-0:checked ~ .carousel-track {
           transform: translateX(0%);
           animation: none;
         }
-        #slide-1:checked ~ .carousel-track { 
+        #slide-1:checked ~ .carousel-track {
           transform: translateX(-100%);
           animation: none;
         }
-        #slide-2:checked ~ .carousel-track { 
+        #slide-2:checked ~ .carousel-track {
           transform: translateX(-200%);
           animation: none;
         }
-        #slide-3:checked ~ .carousel-track { 
+        #slide-3:checked ~ .carousel-track {
           transform: translateX(-300%);
           animation: none;
         }
-        #slide-4:checked ~ .carousel-track { 
+        #slide-4:checked ~ .carousel-track {
           transform: translateX(-400%);
           animation: none;
         }
-        #slide-5:checked ~ .carousel-track { 
+        #slide-5:checked ~ .carousel-track {
           transform: translateX(-500%);
           animation: none;
         }
 
-        /* Pause animation when paused */
+        /* Pause animation state */
         .carousel-pause-input:checked ~ .carousel-track {
           animation-play-state: paused;
         }
 
-        /* Navigation Buttons */
+        /* Navigation button positioning */
         .carousel-nav-prev,
         .carousel-nav-next {
           position: absolute;
@@ -324,6 +375,7 @@ export default async function HomePage() {
           right: 1rem;
         }
 
+        /* Navigation button styling */
         .carousel-nav-button {
           background: rgba(0, 0, 0, 0.5);
           color: white;
@@ -341,7 +393,7 @@ export default async function HomePage() {
           background: rgba(0, 0, 0, 0.7);
         }
 
-        /* Controls Container */
+        /* Controls container at bottom */
         .carousel-controls {
           position: absolute;
           bottom: 1rem;
@@ -354,11 +406,13 @@ export default async function HomePage() {
           padding: 0.5rem 1rem;
         }
 
+        /* Indicator dots container */
         .carousel-indicators {
           display: flex;
           gap: 0.5rem;
         }
 
+        /* Individual indicator styling */
         .carousel-indicator {
           width: 0.5rem;
           height: 0.5rem;
@@ -373,18 +427,19 @@ export default async function HomePage() {
           background: rgba(255, 255, 255, 0.75);
         }
 
-        /* Auto-play indicator animation */
+        /* Progress animation for indicators */
         @keyframes indicator-progress {
-          0%, 16.66% { 
+          0%, 16.66% {
             background: white;
             width: 2rem;
           }
-          16.67%, 100% { 
+          16.67%, 100% {
             background: rgba(255, 255, 255, 0.5);
             width: 0.5rem;
           }
         }
 
+        /* Apply progress animation to each indicator with delay */
         .carousel-indicator:nth-child(1) {
           animation: indicator-progress 30s infinite;
           animation-delay: 0s;
@@ -415,10 +470,12 @@ export default async function HomePage() {
           animation-delay: 25s;
         }
 
+        /* Pause indicator animations when paused */
         .carousel-pause-input:checked ~ .carousel-controls .carousel-indicator {
           animation-play-state: paused;
         }
 
+        /* Play/pause button styling */
         .carousel-play-pause {
           display: flex;
           align-items: center;
@@ -435,6 +492,7 @@ export default async function HomePage() {
           transform: scale(1.1);
         }
 
+        /* Toggle play/pause icons */
         .carousel-play-pause .pause-icon {
           display: none;
         }
