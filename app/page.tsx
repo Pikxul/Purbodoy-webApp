@@ -264,7 +264,7 @@ export default async function HomePage() {
       <section className="py-12 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-slate-900">
-            Popular Destinations
+            Handpicked Collections for You
           </h2>
 
           <Link
