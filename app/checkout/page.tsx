@@ -52,14 +52,41 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [pinError, setPinError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleChange = (field: keyof BillingForm, value: string) => {
     setBilling((prev) => ({ ...prev, [field]: value }));
+
+    if (field === 'email') {
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+        setEmailError("Please enter a valid email address.");
+      } else {
+        setEmailError("");
+      }
+    }
+
+    if (field === 'phone') {
+      if (!/^\d{10}$/.test(value)) {
+        setPhoneError("Phone number must be exactly 10 digits.");
+      } else {
+        setPhoneError("");
+      }
+    }
+
+    if (field === 'pin') {
+      if (!/^\d{6}$/.test(value)) {
+        setPinError("ZIP code must be exactly 6 digits.");
+      } else {
+        setPinError("");
+      }
+    }
   };
 
   const isBillingValid = Object.values(billing).every(
     (v) => v.trim() !== ""
-  );
+  ) && !emailError && !phoneError && !pinError;
 
   const canConfirm =
     isBillingValid && paymentMethod !== "" && !isSubmitting;
@@ -169,6 +196,14 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {emailError && (
+              <p className="text-xs text-red-500">{emailError}</p>
+            )}
+
+            {phoneError && (
+              <p className="text-xs text-red-500">{phoneError}</p>
+            )}
+
             <input
               placeholder="Address"
               value={billing.address}
@@ -200,6 +235,10 @@ export default function CheckoutPage() {
                 />
               ))}
             </div>
+
+            {pinError && (
+              <p className="text-xs text-red-500">{pinError}</p>
+            )}
 
             {!isBillingValid && (
               <p className="text-xs text-red-500">
