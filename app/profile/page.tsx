@@ -42,22 +42,20 @@ function ProfileSkeleton() {
   return (
     <main className="space-y-16 pb-16 animate-pulse">
       {/* Profile card skeleton */}
-      <section className="rounded-2xl border bg-white shadow-sm">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between p-6">
+      <section className="relative rounded-2xl bg-white shadow-sm">
+        <div className="absolute top-4 right-4 h-9 w-28 rounded bg-slate-200" />
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center p-6">
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-full bg-slate-200" />
             <div className="space-y-2">
               <div className="h-4 w-40 rounded bg-slate-200" />
               <div className="h-3 w-56 rounded bg-slate-100" />
+              <div className="h-3 w-32 rounded bg-slate-100" />
             </div>
-          </div>
-          <div className="flex gap-2">
-            <div className="h-9 w-28 rounded bg-slate-200" />
-            <div className="h-9 w-24 rounded bg-slate-100" />
           </div>
         </div>
 
-        <div className="border-t p-6 grid gap-6 sm:grid-cols-2">
+        <div className="p-6 grid gap-6 sm:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="space-y-2">
               <div className="h-3 w-24 rounded bg-slate-100" />
@@ -68,14 +66,17 @@ function ProfileSkeleton() {
       </section>
 
       {/* Trips skeleton */}
-      <section className="rounded-2xl border bg-white p-6 shadow-sm space-y-4">
+      <section className="rounded-2xl bg-white p-6 shadow-sm space-y-6">
         <div className="h-4 w-24 rounded bg-slate-200" />
         {Array.from({ length: 2 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-lg border bg-slate-50 p-4 space-y-3"
+            className="rounded-lg bg-slate-50 p-4 space-y-2"
           >
-            <div className="h-3 w-48 rounded bg-slate-200" />
+            <div className="flex justify-between">
+              <div className="h-3 w-48 rounded bg-slate-200" />
+              <div className="h-3 w-20 rounded bg-slate-100" />
+            </div>
             <div className="h-3 w-64 rounded bg-slate-100" />
             <div className="h-3 w-32 rounded bg-slate-100" />
           </div>
@@ -107,6 +108,7 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
   // 🔒 AUTH GUARD
   useEffect(() => {
@@ -184,8 +186,29 @@ export default function ProfilePage() {
   return (
     <main className="space-y-16 pb-16">
       {/* PROFILE CARD */}
-      <section className="rounded-2xl border bg-white shadow-sm">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between p-6">
+      <section className="relative rounded-2xl bg-white shadow-sm">
+        {!editing ? (
+          <button
+            onClick={() => {
+              setDraftProfile(profile);
+              setEditing(true);
+            }}
+            className="absolute top-4 right-4 rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-50 text-slate-600"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+        ) : (
+          <button
+            onClick={handleSaveProfile}
+            disabled={saving || !!phoneError}
+            className="absolute top-4 right-4 rounded-md bg-sky-600 text-white px-4 py-2 text-sm font-medium hover:bg-sky-700 disabled:opacity-70"
+          >
+            {saving ? "Saving…" : "Save"}
+          </button>
+        )}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center p-6">
           <div className="flex items-center gap-4">
             <svg className="h-16 w-16 rounded-full bg-slate-200 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -197,40 +220,16 @@ export default function ProfilePage() {
               <p className="text-sm text-slate-500">
                 {session?.user?.email}
               </p>
+              <p className="text-sm text-slate-500">
+                {profile.phone || "—"}
+              </p>
             </div>
-          </div>
-
-          <div className="flex gap-2">
-            {!editing ? (
-              <button
-                onClick={() => {
-                  setDraftProfile(profile);
-                  setEditing(true);
-                }}
-                className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-50 text-slate-600"
-              >
-                Edit Profile
-              </button>
-            ) : (
-              <button
-                onClick={handleSaveProfile}
-                disabled={saving}
-                className="rounded-md bg-sky-600 text-white px-4 py-2 text-sm font-medium hover:bg-sky-700 disabled:opacity-70"
-              >
-                {saving ? "Saving…" : "Save Changes"}
-              </button>
-            )}
-
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="rounded-md border border-red-200 text-red-600 px-4 py-2 text-sm hover:bg-red-50"
-            >
-              Sign out
-            </button>
           </div>
         </div>
 
-        <div className="border-t p-6 grid gap-6 sm:grid-cols-2 text-slate-600">
+        <div className={`p-6 grid gap-6 sm:grid-cols-2 text-slate-600 transition-all duration-300 ease-in-out ${
+          editing ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+        }`}>
           {[
             ["Full Name", "name"],
             ["Phone Number", "phone"],
@@ -246,12 +245,20 @@ export default function ProfilePage() {
                 <input
                   type={key === "dateOfBirth" ? "date" : "text"}
                   value={draftProfile[key as keyof ProfileForm]}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setDraftProfile((p) => ({
                       ...p,
-                      [key]: e.target.value,
-                    }))
-                  }
+                      [key]: value,
+                    }));
+                    if (key === "phone") {
+                      if (!/^\d{10}$/.test(value)) {
+                        setPhoneError("Phone number must be exactly 10 digits.");
+                      } else {
+                        setPhoneError("");
+                      }
+                    }
+                  }}
                   placeholder={label}
                   className="w-full rounded-md border px-3 py-2 text-sm"
                 />
@@ -263,6 +270,10 @@ export default function ProfilePage() {
             </div>
           ))}
 
+          {phoneError && (
+            <p className="text-xs text-red-500 col-span-full">{phoneError}</p>
+          )}
+
           {saved && (
             <p className="text-sm text-emerald-600 col-span-full">
               Profile updated successfully
@@ -272,7 +283,7 @@ export default function ProfilePage() {
       </section>
 
       {/* MY TRIPS */}
-      <section className="rounded-2xl border bg-white p-6 shadow-sm space-y-6">
+      <section className="rounded-2xl bg-white p-6 shadow-sm space-y-6">
         <h2 className="text-base font-semibold text-slate-900">
           My Trips
         </h2>
@@ -285,7 +296,7 @@ export default function ProfilePage() {
           bookings.map((booking) => (
             <div
               key={booking.id}
-              className="rounded-lg border bg-slate-50 p-4 space-y-2"
+              
             >
               <div className="flex justify-between text-base font-medium text-slate-600">
                 <span>Booking Id: #{'PUR'+booking.id.slice(0, 8)}</span>
