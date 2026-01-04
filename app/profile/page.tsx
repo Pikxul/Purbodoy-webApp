@@ -187,9 +187,9 @@ export default function ProfilePage() {
       <section className="rounded-2xl border bg-white shadow-sm">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between p-6">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-sky-600 text-white flex items-center justify-center text-2xl font-semibold">
-              {(profile.name || session?.user?.email)?.[0]?.toUpperCase()}
-            </div>
+            <svg className="h-16 w-16 rounded-full bg-slate-200 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
             <div>
               <p className="text-lg font-semibold text-slate-900">
                 {profile.name || "Purbodoy Traveller"}
