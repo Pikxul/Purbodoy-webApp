@@ -78,15 +78,15 @@ export function PackageCard({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
 
         {/* Image content */}
-        <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3">
+        <div className="absolute inset-x-0 bottom-0 p-2 sm:p-4 flex items-end justify-between gap-3">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-300">
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-amber-300">
               {location}
             </p>
             <h3 className="text-sm font-semibold text-white leading-tight">
               {title}
             </h3>
-            <p className="mt-0.5 text-[11px] text-slate-200 line-clamp-2">
+            <p className="mt-0.5 text-[11px] text-slate-200 line-clamp-1 sm:line-clamp-2">
               {tagLine}
             </p>
           </div>
