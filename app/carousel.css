@@ -1,12 +1,16 @@
+/* Carousel container setup */
 .carousel-container {
   position: relative;
+  border: none;
 }
 
+/* Hidden inputs for controls */
 .carousel-pause-input,
 .carousel-radio {
   display: none;
 }
 
+/* Main carousel track with auto-slide animation */
 .carousel-track {
   position: absolute;
   inset: 0;
@@ -15,6 +19,7 @@
   animation: carousel-auto-slide 30s infinite;
 }
 
+/* Keyframe animation for auto-sliding */
 @keyframes carousel-auto-slide {
   0%, 16.66% { transform: translateX(0%); }
   16.67%, 33.33% { transform: translateX(-100%); }
@@ -24,13 +29,14 @@
   83.34%, 100% { transform: translateX(-500%); }
 }
 
+/* Individual slide styling */
 .carousel-slide {
   position: relative;
   min-width: 100%;
   flex-shrink: 0;
 }
 
-/* Manual control via radio buttons */
+/* Manual slide controls via radio buttons */
 #slide-0:checked ~ .carousel-track {
   transform: translateX(0%);
   animation: none;
@@ -56,12 +62,12 @@
   animation: none;
 }
 
-/* Pause animation when paused */
+/* Pause animation state */
 .carousel-pause-input:checked ~ .carousel-track {
   animation-play-state: paused;
 }
 
-/* Navigation Buttons */
+/* Navigation button positioning */
 .carousel-nav-prev,
 .carousel-nav-next {
   position: absolute;
@@ -79,6 +85,7 @@
   right: 1rem;
 }
 
+/* Navigation button styling */
 .carousel-nav-button {
   background: rgba(0, 0, 0, 0.5);
   color: white;
@@ -96,7 +103,7 @@
   background: rgba(0, 0, 0, 0.7);
 }
 
-/* Controls Container */
+/* Controls container at bottom */
 .carousel-controls {
   position: absolute;
   bottom: 1rem;
@@ -105,15 +112,17 @@
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
+  justify-content: center;
+  padding: 0.5rem;
 }
 
+/* Indicator dots container */
 .carousel-indicators {
   display: flex;
   gap: 0.5rem;
 }
 
+/* Individual indicator styling */
 .carousel-indicator {
   width: 0.5rem;
   height: 0.5rem;
@@ -128,7 +137,7 @@
   background: rgba(255, 255, 255, 0.75);
 }
 
-/* Auto-play indicator animation */
+/* Progress animation for indicators */
 @keyframes indicator-progress {
   0%, 16.66% {
     background: white;
@@ -140,6 +149,7 @@
   }
 }
 
+/* Apply progress animation to each indicator with delay */
 .carousel-indicator:nth-child(1) {
   animation: indicator-progress 30s infinite;
   animation-delay: 0s;
@@ -170,10 +180,12 @@
   animation-delay: 25s;
 }
 
+/* Pause indicator animations when paused */
 .carousel-pause-input:checked ~ .carousel-controls .carousel-indicator {
   animation-play-state: paused;
 }
 
+/* Play/pause button styling */
 .carousel-play-pause {
   display: flex;
   align-items: center;
@@ -190,6 +202,7 @@
   transform: scale(1.1);
 }
 
+/* Toggle play/pause icons */
 .carousel-play-pause .pause-icon {
   display: none;
 }
