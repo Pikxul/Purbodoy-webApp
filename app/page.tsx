@@ -364,7 +364,7 @@ export default async function HomePage() {
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
               </div>
-              <div className="metric-number">10,000+</div>
+              <div className="metric-number">100,000+</div>
               <div className="metric-label">Happy Travelers</div>
             </div>
             <div className="metric-item">
@@ -688,6 +688,134 @@ export default async function HomePage() {
         @keyframes swipe-hint {
           0%, 100% { opacity: 0.5; transform: translateX(0); }
           50% { opacity: 1; transform: translateX(5px); }
+        }
+
+        /* Customer Trust Parameters Section - Enhanced and Compact */
+        .customer-trust-section {
+          margin-top: 2rem;
+          padding: 1rem;
+          border-radius: 1rem;
+        }
+
+        .trust-metrics {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-around;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        .metric-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding: 0.75rem;
+          border-radius: 0.5rem;
+          background: white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          min-width: 120px;
+          flex: 1;
+          max-width: 150px;
+        }
+
+        .metric-item:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+          background: #f1f5f9;
+        }
+
+        .metric-icon {
+          margin-bottom: 0.5rem;
+        }
+
+        .metric-icon svg {
+          width: 2rem;
+          height: 2rem;
+          color: #1e293b;
+          transition: color 0.3s ease;
+        }
+
+        .metric-item:hover .metric-icon svg {
+          color: #0f172a;
+        }
+
+        .metric-number {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #0f172a;
+          margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #64748b;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .rating-highlight {
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+          border: 2px solid #f59e0b;
+        }
+
+        .rating-highlight .metric-icon svg {
+          color: #d97706;
+        }
+
+        .rating-highlight .metric-number {
+          color: #92400e;
+        }
+
+        .rating-highlight .metric-label {
+          color: #78350f;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+          .trust-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+          }
+
+          .metric-item {
+            flex: none;
+            min-width: auto;
+            max-width: none;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .trust-metrics {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.375rem;
+          }
+
+          .customer-trust-section {
+            padding: 0.5rem;
+          }
+
+          .metric-item {
+            padding: 0.5rem;
+            min-width: 100px;
+            max-width: 120px;
+          }
+
+          .metric-icon svg {
+            width: 2rem;
+            height: 2rem;
+          }
+
+          .metric-number {
+            font-size: 1.25rem;
+          }
+
+          .metric-label {
+            font-size: 0.7rem;
+          }
         }
       `}</style>
     </main>
