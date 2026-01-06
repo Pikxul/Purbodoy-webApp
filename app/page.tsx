@@ -179,46 +179,54 @@ export default async function HomePage() {
   return (
     <main className="">
       {/* Hero Section */}
-      <section className="py-12 grid gap-8 md:grid-cols-2 md:items-center">
-        <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+      <section className="pt-8 md:pt-5 pb-16 md:pb-20 grid gap-10 md:grid-cols-2 md:items-center">
+        <div className="space-y-6 animate-fade-in-up">
+          <p className="text-sm font-semibold uppercase tracking-wider text-sky-700">
             Purbodoy Tours & Travels
           </p>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
             Explore Incredible India with{" "}
-            <span className="text-sky-700">Purbodoy</span>
+            <span className="text-sky-700 bg-gradient-to-r from-sky-600 to-sky-800 bg-clip-text text-transparent">Purbodoy</span>
           </h1>
 
-          <p className="text-slate-600 text-sm md:text-base">
-            Curated domestic trips across India — from beaches and mountains to
-            heritage and culture. Book family, friends, or solo getaways with a
-            smooth online experience.
+          <p className="text-slate-600 text-base md:text-lg leading-relaxed max-w-lg">
+            Curated domestic trips across India — from pristine beaches and majestic mountains to
+            rich heritage and vibrant culture. Book unforgettable family, friends, or solo getaways with a
+            seamless online experience.
           </p>
 
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-4 pt-4">
             <Link
               href="/packages"
-              className="rounded-full bg-sky-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 transition"
+              className="group rounded-full bg-sky-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-sky-700 hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
               Browse Packages
+              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
             </Link>
 
             <Link
               href="/gallery"
-              className="rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
+              className="group rounded-full border-2 border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-400 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
+              <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
               View Gallery
             </Link>
           </div>
 
-          <p className="text-xs text-slate-500 pt-1">
+          <p className="text-sm text-slate-500 pt-2 flex items-center gap-2">
+            <span className="inline-block w-8 h-px bg-gradient-to-r from-sky-400 to-sky-600"></span>
             India-only domestic trips • Handled by Purbodoy Tours & Travels
+            <span className="inline-block w-8 h-px bg-gradient-to-r from-sky-600 to-sky-400"></span>
           </p>
         </div>
 
         {/* Hero Visual — CSS Carousel */}
-        <div className="relative h-56 md:h-72 rounded-2xl border overflow-hidden carousel-container">
+        <div className="relative h-72 md:h-96 rounded-3xl border-0 overflow-hidden carousel-container shadow-2xl animate-fade-in-up" style={{animationDelay: '0.2s'}}>
           <div className="carousel-track">
             {heroImages.map((img, i) => (
               <div key={i} className="carousel-slide">
@@ -244,13 +252,7 @@ export default async function HomePage() {
           </div>
 
           {/* Text Overlay */}
-          <div className="relative z-10 h-full flex flex-col items-center justify-center text-center space-y-2 px-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-              {/* Featured Journeys */}
-            </p>
-            <p className="text-sm md:text-base text-slate-800">
-              {/* Northeast • Himachal • Goa • Rajasthan • Kerala */}
-            </p>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center space-y-3 px-6">
           </div>
         </div>
       </section>
