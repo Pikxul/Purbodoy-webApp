@@ -1,8 +1,6 @@
-// app/components/PackageCard.tsx
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./cart-context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -27,12 +25,15 @@ export function PackageCard({
   imageUrl,
 }: PackageCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [wishlistChecking, setWishlistChecking] = useState(true); // Loading state for initial check
 
   const { items, addItem } = useCart();
   const { status } = useSession();
   const router = useRouter();
 
-  // ✅ CORRECT CART CHECK (packageId)
+  // ✅ CART CHECK
   const isInCart = items.some(
     (item) => item.packageId === packageId
   );
@@ -44,6 +45,73 @@ export function PackageCard({
   const finalImgUrl =
     imageUrl && !imageError ? imageUrl : fallbackImgUrl;
 
+  /**
+   * 🔁 Check wishlist state (only if logged in)
+   */
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setWishlistChecking(false);
+      return;
+    }
+
+    const abortController = new AbortController();
+    setWishlistChecking(true);
+
+    fetch("/api/wishlist", { signal: abortController.signal })
+      .then((res) => res.ok ? res.json() : [])
+      .then((data: { packageId: string }[]) => {
+        const exists = data.some(
+          (item) => item.packageId === packageId
+        );
+        setWishlisted(exists);
+        setWishlistChecking(false);
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          setWishlistChecking(false);
+        }
+      });
+
+    return () => abortController.abort();
+  }, [status, packageId]);
+
+  /**
+   * ❤️ Wishlist toggle
+   */
+  const handleWishlistToggle = async () => {
+    if (status !== "authenticated") {
+      router.push(`/login?redirectTo=/packages`);
+      return;
+    }
+
+    if (wishlistLoading) return;
+
+    setWishlistLoading(true);
+    setWishlisted((prev) => !prev); // optimistic
+
+    try {
+      if (!wishlisted) {
+        await fetch("/api/wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ packageId }),
+        });
+      } else {
+        await fetch(`/api/wishlist?packageId=${packageId}`, {
+          method: "DELETE",
+        });
+      }
+    } catch {
+      // rollback on failure
+      setWishlisted((prev) => !prev);
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  /**
+   * 🛒 Add to cart
+   */
   const handleAddToCart = () => {
     if (status !== "authenticated") {
       router.push("/login?redirectTo=/packages");
@@ -74,8 +142,21 @@ export function PackageCard({
           />
         )}
 
-        {/* Gradient overlay – travel mood */}
+        {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
+
+        {/* ❤️ Wishlist button */}
+        <button
+          type="button"
+          onClick={handleWishlistToggle}
+          aria-label="Add to wishlist"
+          disabled={wishlistChecking || wishlistLoading}
+          className="absolute top-3 right-3 z-10 rounded-full bg-white/35 backdrop-blur px-2.5 py-1.5 shadow-md hover:scale-105 transition disabled:opacity-70 disabled:cursor-wait"
+        >
+          <span className={`text-sm ${wishlisted ? "text-red-500" : "text-slate-500"}`}>
+            {wishlistChecking ? "⏳" : wishlisted ? "❤️" : "🤍"}
+          </span>
+        </button>
 
         {/* Image content */}
         <div className="absolute inset-x-0 bottom-0 p-2 sm:p-4 flex items-end justify-between gap-3">

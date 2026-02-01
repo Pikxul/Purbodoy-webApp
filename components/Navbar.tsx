@@ -1,3 +1,5 @@
+//components/Navbar.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -56,6 +58,17 @@ export function Navbar() {
 
           {isLoggedIn && (
             <>
+              <Link
+                href="/wishlist"
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  pathname.startsWith("/wishlist")
+                    ? "bg-gradient-to-r from-sky-500 to-teal-500 text-white shadow-sm"
+                    : "text-slate-700 hover:bg-sky-50 hover:text-sky-700"
+                }`}
+              >
+                My Wish List
+              </Link>
+
               <Link
                 href="/cart"
                 className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
@@ -135,6 +148,14 @@ export function Navbar() {
 
             {isLoggedIn && (
               <>
+                <Link
+                  href="/wishlist"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-700"
+                >
+                  Wishlist
+                </Link>
+
                 <Link
                   href="/cart"
                   onClick={() => setIsOpen(false)}

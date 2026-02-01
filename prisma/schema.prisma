@@ -62,6 +62,9 @@ model User {
   bookings      Booking[]
   payments      Payment[]
 
+  // Wishlist
+  wishlist      Wishlist[]
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -79,22 +82,35 @@ model Package {
   imageUrl     String?
 
   bookingItems BookingItem[]
+  wishlistedBy Wishlist[]
 
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
 
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  packageId String
+  createdAt DateTime @default(now())
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, packageId])
+}
+
 model Booking {
-  id            String         @id @default(cuid())
-  userId        String
-  totalAmount   Int            // INR
-  status        BookingStatus  @default(PENDING_PAYMENT)
+  id          String         @id @default(cuid())
+  userId      String
+  totalAmount Int            // INR
+  status      BookingStatus  @default(PENDING_PAYMENT)
 
-  user          User           @relation(fields: [userId], references: [id])
-  items         BookingItem[]
-  payment       Payment?
+  user        User           @relation(fields: [userId], references: [id])
+  items       BookingItem[]
+  payment     Payment?
 
-  createdAt     DateTime       @default(now())
+  createdAt   DateTime       @default(now())
 }
 
 model BookingItem {
@@ -110,26 +126,26 @@ model BookingItem {
 }
 
 model Payment {
-  id              String           @id @default(cuid())
-  bookingId       String           @unique
-  userId          String
+  id                String           @id @default(cuid())
+  bookingId         String           @unique
+  userId            String
 
-  provider        PaymentProvider
-  status          PaymentStatus    @default(CREATED)
+  provider          PaymentProvider
+  status            PaymentStatus    @default(CREATED)
 
-  amount          Int              // INR
-  currency        String           @default("INR")
+  amount            Int              // INR
+  currency          String           @default("INR")
 
   // Razorpay specific
   razorpayOrderId   String?
   razorpayPaymentId String?
   razorpaySignature String?
 
-  booking         Booking          @relation(fields: [bookingId], references: [id])
-  user            User             @relation(fields: [userId], references: [id])
+  booking           Booking          @relation(fields: [bookingId], references: [id])
+  user              User             @relation(fields: [userId], references: [id])
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 }
 
 model Account {
