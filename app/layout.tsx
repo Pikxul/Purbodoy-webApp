@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import Providers from "./providers";
 import { WishlistProvider } from "@/components/wishlist-context";
+import { Chatbot } from "@/components/Chatbot";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
               {/* Shared Footer */}
               <Footer />
+              <Chatbot />
             </div>
           </WishlistProvider>
         </Providers>

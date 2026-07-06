@@ -67,7 +67,20 @@ export default async function HomePage() {
     });
   } catch (error) {
     console.error("Failed to fetch data from database:", error);
-    // Page will render with empty arrays as fallback
+    // Fallback data so the page doesn't crash visually during DB outages
+    heroImages = [
+      { imageUrl: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=2071&auto=format&fit=crop" },
+      { imageUrl: "https://images.unsplash.com/photo-1492136344046-866c85e0bf04?q=80&w=2028&auto=format&fit=crop" },
+      { imageUrl: "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2076&auto=format&fit=crop" },
+      { imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=2069&auto=format&fit=crop" },
+      { imageUrl: "https://images.unsplash.com/photo-1506461883276-594a12b11cf3?q=80&w=2070&auto=format&fit=crop" },
+      { imageUrl: "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=2070&auto=format&fit=crop" }
+    ];
+    popularPackages = [
+      { id: "fallback-1", title: "Taj Mahal Tour", location: "Agra", imageUrl: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=2071&auto=format&fit=crop", price: 5000, shortInfo: "Visit the symbol of love" },
+      { id: "fallback-2", title: "Kerala Backwaters", location: "Kerala", imageUrl: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2071&auto=format&fit=crop", price: 15000, shortInfo: "Relax in nature's lap" },
+      { id: "fallback-3", title: "Goa Beaches", location: "Goa", imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e4f2?q=80&w=2069&auto=format&fit=crop", price: 12000, shortInfo: "Sun, sand and sea" }
+    ];
   }
 
   return (
