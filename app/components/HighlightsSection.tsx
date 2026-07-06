@@ -85,7 +85,7 @@ export default function HighlightsSection() {
         setFlippedCard(null);
       }
     }}>
-      <h2 className="text-xl font-semibold text-slate-900">
+      <h2 className="text-2xl font-black text-slate-900 uppercase tracking-widest text-center pb-8">
         Why travel with Purbodoy?
       </h2>
 
@@ -110,14 +110,12 @@ export default function HighlightsSection() {
             style={{ perspective: '1000px', touchAction: 'manipulation' }}
           >
             <div
-              className={`highlight-card relative w-full h-48 transition-transform duration-700 preserve-3d ${
-                flippedCard === index ? 'rotate-y-180' : ''
-              }`}
+              className={`highlight-card relative w-full h-48 transition-transform duration-700 preserve-3d ${flippedCard === index ? 'rotate-y-180' : ''
+                }`}
               style={{ transformStyle: 'preserve-3d' }}
             >
-              {/* Front of card */}
               <div
-                className="absolute inset-0 w-full h-full backface-hidden rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-center items-center text-center space-y-3"
+                className="absolute inset-0 w-full h-full backface-hidden rounded-3xl border border-slate-100 bg-white/40 backdrop-blur-sm p-6 transition-all duration-300 flex flex-col justify-center items-center text-center space-y-4"
                 style={{ backfaceVisibility: 'hidden' }}
               >
                 <div className={`highlight-icon p-3 rounded-lg ${highlight.iconBg}`}>
@@ -133,7 +131,7 @@ export default function HighlightsSection() {
 
               {/* Back of card */}
               <div
-                className="absolute inset-0 w-full h-full backface-hidden rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-center items-center text-center rotate-y-180"
+                className="absolute inset-0 w-full h-full backface-hidden rounded-3xl border border-sky-100 bg-sky-50 p-6 transition-all duration-300 flex flex-col justify-center items-center text-center rotate-y-180"
                 style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
               >
                 <p className="text-xs text-slate-500">

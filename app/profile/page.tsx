@@ -35,56 +35,7 @@ type ProfileForm = {
   dateOfBirth: string;
 };
 
-/* =======================
-   Skeleton Loader
-======================= */
-function ProfileSkeleton() {
-  return (
-    <main className="space-y-16 pb-16 animate-pulse">
-      {/* Profile card skeleton */}
-      <section className="relative rounded-2xl bg-white shadow-sm">
-        <div className="absolute top-4 right-4 h-9 w-28 rounded bg-slate-200" />
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center p-6">
-          <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-slate-200" />
-            <div className="space-y-2">
-              <div className="h-4 w-40 rounded bg-slate-200" />
-              <div className="h-3 w-56 rounded bg-slate-100" />
-              <div className="h-3 w-32 rounded bg-slate-100" />
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 grid gap-6 sm:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="space-y-2">
-              <div className="h-3 w-24 rounded bg-slate-100" />
-              <div className="h-9 w-full rounded bg-slate-200" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Trips skeleton */}
-      <section className="rounded-2xl bg-white p-6 shadow-sm space-y-6">
-        <div className="h-4 w-24 rounded bg-slate-200" />
-        {Array.from({ length: 2 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-lg bg-slate-50 p-4 space-y-2"
-          >
-            <div className="flex justify-between">
-              <div className="h-3 w-48 rounded bg-slate-200" />
-              <div className="h-3 w-20 rounded bg-slate-100" />
-            </div>
-            <div className="h-3 w-64 rounded bg-slate-100" />
-            <div className="h-3 w-32 rounded bg-slate-100" />
-          </div>
-        ))}
-      </section>
-    </main>
-  );
-}
+import ProfileLoading from "./loading";
 
 /* =======================
    Page
@@ -180,7 +131,7 @@ export default function ProfilePage() {
 
   /* ✅ THIS IS THE FIX */
   if (status === "loading" || loading) {
-    return <ProfileSkeleton />;
+    return <ProfileLoading />;
   }
 
   return (
@@ -211,7 +162,7 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center p-6">
           <div className="flex items-center gap-4">
             <svg className="h-16 w-16 rounded-full bg-slate-200 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
             </svg>
             <div>
               <p className="text-lg font-semibold text-slate-900">
@@ -227,9 +178,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className={`p-6 grid gap-6 sm:grid-cols-2 text-slate-600 transition-all duration-300 ease-in-out ${
-          editing ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-        }`}>
+        <div className={`p-6 grid gap-6 sm:grid-cols-2 text-slate-600 transition-all duration-300 ease-in-out ${editing ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+          }`}>
           {[
             ["Full Name", "name"],
             ["Phone Number", "phone"],
@@ -296,10 +246,10 @@ export default function ProfilePage() {
           bookings.map((booking) => (
             <div
               key={booking.id}
-              
+
             >
               <div className="flex justify-between text-base font-medium text-slate-600">
-                <span>Booking Id: #{'PUR'+booking.id.slice(0, 8)}</span>
+                <span>Booking Id: #{'PUR' + booking.id.slice(0, 8)}</span>
                 <span className="text-emerald-600">
                   ₹{booking.totalAmount.toLocaleString("en-IN")}
                 </span>

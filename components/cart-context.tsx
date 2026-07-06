@@ -24,6 +24,7 @@ type CartContextValue = {
   items: CartItem[];
   subtotal: number;
   totalMembers: number;
+  isLoading: boolean;
   addItem: (
     item: Omit<CartItem, "members"> & { members?: number }
   ) => void;
@@ -38,19 +39,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
 
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [storageKey, setStorageKey] = useState<string | null>(null);
 
-  useEffect(() => {                                           // 🔐 Resolve storage key based on auth state
+  useEffect(() => {
+    // 🔐 Resolve storage key based on auth state
     if (status === "authenticated" && session?.user?.email) {
       setStorageKey(`purbodoy_cart_${session.user.email}`);
-    } else {
+    } else if (status === "unauthenticated") {
       setStorageKey(null);
-      setItems([]);                                           // 🧹 hard reset on logout
+      setItems([]); // 🧹 hard reset on logout
+      setIsLoading(false);
     }
   }, [status, session?.user?.email]);
 
-  useEffect(() => {                                           // 🔁 Load cart for the CURRENT user
-    if (!storageKey) return;
+  useEffect(() => {
+    // 🔁 Load cart for the CURRENT user
+    if (!storageKey) {
+      // If we're authenticated but no key yet, we're still loading
+      if (status === "authenticated") setIsLoading(true);
+      return;
+    }
 
     try {
       const raw = localStorage.getItem(storageKey);
@@ -60,10 +69,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setItems(parsed);
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("Cart hydration error:", err);
       setItems([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [storageKey]);
+  }, [storageKey, status]);
 
   /**
    * 💾 Persist cart per-user
@@ -81,9 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // ➕ Add item
   const addItem: CartContextValue["addItem"] = (item) => {
     setItems((prev) => {
-      const existing = prev.find(
-        (p) => p.packageId === item.packageId
-      );
+      const existing = prev.find((p) => p.packageId === item.packageId);
 
       const membersToAdd = item.members ?? 1;
 
@@ -109,9 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const removeItem = (packageId: string) => {
-    setItems((prev) =>
-      prev.filter((p) => p.packageId !== packageId)
-    );
+    setItems((prev) => prev.filter((p) => p.packageId !== packageId));
   };
 
   const updateMembers = (packageId: string, members: number) => {
@@ -129,7 +137,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (storageKey) {
       try {
         localStorage.removeItem(storageKey);
-      } catch {}
+      } catch { }
     }
   };
 
@@ -138,15 +146,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     0
   );
 
-  const totalMembers = items.reduce(
-    (sum, item) => sum + item.members,
-    0
-  );
+  const totalMembers = items.reduce((sum, item) => sum + item.members, 0);
 
   const value: CartContextValue = {
     items,
     subtotal,
     totalMembers,
+    isLoading,
     addItem,
     removeItem,
     updateMembers,
@@ -154,9 +160,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={value}>{children}</CartContext.Provider>
   );
 }
 

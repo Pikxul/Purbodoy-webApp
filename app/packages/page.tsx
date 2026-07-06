@@ -1,7 +1,11 @@
-// app/packages/page.tsx
-
 import { PackageCard } from "@/components/PackageCard";
 import { prisma } from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Explore Packages | Purbodoy Tours & Travels",
+  description: "Browse our handpicked domestic travel packages across India. Find your next adventure with Purbodoy.",
+};
 
 export default async function PackagesPage() {
   // ✅ FETCH REAL PACKAGES FROM DB

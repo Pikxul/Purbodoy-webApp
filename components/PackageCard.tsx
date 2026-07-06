@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "./cart-context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useWishlist } from "./wishlist-context";
 
 type PackageCardProps = {
   packageId: string; // ✅ Prisma Package.id
@@ -25,13 +26,14 @@ export function PackageCard({
   imageUrl,
 }: PackageCardProps) {
   const [imageError, setImageError] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
-  const [wishlistChecking, setWishlistChecking] = useState(true); // Loading state for initial check
 
   const { items, addItem } = useCart();
+  const { toggleWishlist, isWishlisted, isLoading: wishlistChecking } = useWishlist();
   const { status } = useSession();
   const router = useRouter();
+
+  const wishlisted = isWishlisted(packageId);
 
   // ✅ CART CHECK
   const isInCart = items.some(
@@ -46,36 +48,6 @@ export function PackageCard({
     imageUrl && !imageError ? imageUrl : fallbackImgUrl;
 
   /**
-   * 🔁 Check wishlist state (only if logged in)
-   */
-  useEffect(() => {
-    if (status !== "authenticated") {
-      setWishlistChecking(false);
-      return;
-    }
-
-    const abortController = new AbortController();
-    setWishlistChecking(true);
-
-    fetch("/api/wishlist", { signal: abortController.signal })
-      .then((res) => res.ok ? res.json() : [])
-      .then((data: { packageId: string }[]) => {
-        const exists = data.some(
-          (item) => item.packageId === packageId
-        );
-        setWishlisted(exists);
-        setWishlistChecking(false);
-      })
-      .catch((err) => {
-        if (err.name !== 'AbortError') {
-          setWishlistChecking(false);
-        }
-      });
-
-    return () => abortController.abort();
-  }, [status, packageId]);
-
-  /**
    * ❤️ Wishlist toggle
    */
   const handleWishlistToggle = async () => {
@@ -87,23 +59,8 @@ export function PackageCard({
     if (wishlistLoading) return;
 
     setWishlistLoading(true);
-    setWishlisted((prev) => !prev); // optimistic
-
     try {
-      if (!wishlisted) {
-        await fetch("/api/wishlist", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ packageId }),
-        });
-      } else {
-        await fetch(`/api/wishlist?packageId=${packageId}`, {
-          method: "DELETE",
-        });
-      }
-    } catch {
-      // rollback on failure
-      setWishlisted((prev) => !prev);
+      await toggleWishlist(packageId);
     } finally {
       setWishlistLoading(false);
     }
@@ -130,7 +87,7 @@ export function PackageCard({
   };
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+    <div className="group overflow-hidden rounded-[32px] border-0 bg-white premium-shadow premium-shadow-hover transition-all duration-500 hover:-translate-y-2">
       {/* Image */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
         {!imageError && (
@@ -151,31 +108,42 @@ export function PackageCard({
           onClick={handleWishlistToggle}
           aria-label="Add to wishlist"
           disabled={wishlistChecking || wishlistLoading}
-          className="absolute top-3 right-3 z-10 rounded-full bg-white/35 backdrop-blur px-2.5 py-1.5 shadow-md hover:scale-105 transition disabled:opacity-70 disabled:cursor-wait"
+          className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/40 backdrop-blur-md shadow-lg hover:scale-110 active:scale-90 transition-all duration-300 disabled:opacity-70 disabled:cursor-wait group/wishlist"
         >
-          <span className={`text-sm ${wishlisted ? "text-red-500" : "text-slate-500"}`}>
-            {wishlistChecking ? "⏳" : wishlisted ? "❤️" : "🤍"}
-          </span>
+          {wishlistChecking ? (
+            <svg className="h-5 w-5 animate-spin text-slate-600" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          ) : wishlisted ? (
+            <svg className="h-5 w-5 text-red-500 fill-current drop-shadow-sm" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          ) : (
+            <svg className="h-5 w-5 text-slate-700 transition-colors group-hover/wishlist:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          )}
         </button>
 
         {/* Image content */}
-        <div className="absolute inset-x-0 bottom-0 p-2 sm:p-4 flex items-end justify-between gap-3">
-          <div>
-            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-amber-300">
+        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-sky-400">
               {location}
             </p>
-            <h3 className="text-sm font-semibold text-white leading-tight">
+            <h3 className="text-lg sm:text-xl font-black text-white leading-[1.1] tracking-tight">
               {title}
             </h3>
-            <p className="mt-0.5 text-[11px] text-slate-200 line-clamp-1 sm:line-clamp-2">
+            <p className="mt-1 text-[11px] sm:text-xs font-medium text-slate-200/90 line-clamp-1 sm:line-clamp-2 leading-relaxed">
               {tagLine}
             </p>
           </div>
 
           {/* Price badge */}
-          <div className="rounded-xl bg-white/95 backdrop-blur px-3 py-1.5 text-right shadow-md">
-            <p className="text-[10px] text-slate-500">From</p>
-            <p className="text-sm font-bold text-slate-900">
+          <div className="rounded-2xl glass-morphism px-4 py-2.5 text-right shadow-2xl">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-0.5">From</p>
+            <p className="text-base font-black text-slate-900 tracking-tighter">
               ₹{priceFrom.toLocaleString("en-IN")}
             </p>
           </div>
@@ -183,12 +151,12 @@ export function PackageCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-slate-50">
+      <div className="flex items-center justify-between gap-4 px-6 py-5 bg-white">
         <div className="flex flex-col">
-          <span className="text-[11px] font-semibold text-teal-600">
+          <span className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-0.5">
             Curated Experience
           </span>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] font-bold text-slate-400">
             Handpicked by Purbodoy
           </span>
         </div>
@@ -197,15 +165,14 @@ export function PackageCard({
           type="button"
           onClick={handleAddToCart}
           disabled={isInCart}
-          className={`rounded-full px-4 py-1.5 text-[11px] font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2
-            ${
-              isInCart
-                ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-sky-500 to-teal-500 text-white hover:from-sky-600 hover:to-teal-600 focus:ring-teal-400"
+          className={`rounded-full px-6 py-3 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+            ${isInCart
+              ? "bg-slate-100 text-slate-400 cursor-not-allowed shadow-none"
+              : "bg-slate-900 text-white hover:bg-slate-800 hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-slate-900"
             }
           `}
         >
-          {isInCart ? "Added to cart ✓" : "Add to cart"}
+          {isInCart ? "In Cart ✓" : "Book Now"}
         </button>
       </div>
     </div>

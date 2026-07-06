@@ -19,14 +19,42 @@
   animation: carousel-auto-slide 30s infinite;
 }
 
-/* Keyframe animation for auto-sliding */
+/* Keyframe animation for auto-sliding with smooth ramps */
 @keyframes carousel-auto-slide {
-  0%, 16.66% { transform: translateX(0%); }
-  16.67%, 33.33% { transform: translateX(-100%); }
-  33.34%, 50% { transform: translateX(-200%); }
-  50.01%, 66.66% { transform: translateX(-300%); }
-  66.67%, 83.33% { transform: translateX(-400%); }
-  83.34%, 100% { transform: translateX(-500%); }
+
+  0%,
+  14.5% {
+    transform: translateX(0%);
+  }
+
+  16.5%,
+  31.1% {
+    transform: translateX(-100%);
+  }
+
+  33.1%,
+  47.8% {
+    transform: translateX(-200%);
+  }
+
+  49.8%,
+  64.5% {
+    transform: translateX(-300%);
+  }
+
+  66.5%,
+  81.1% {
+    transform: translateX(-400%);
+  }
+
+  83.1%,
+  97.8% {
+    transform: translateX(-500%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
 }
 
 /* Individual slide styling */
@@ -37,34 +65,56 @@
 }
 
 /* Manual slide controls via radio buttons */
-#slide-0:checked ~ .carousel-track {
+#slide-0:checked~.carousel-track {
   transform: translateX(0%);
   animation: none;
 }
-#slide-1:checked ~ .carousel-track {
+
+#slide-1:checked~.carousel-track {
   transform: translateX(-100%);
   animation: none;
 }
-#slide-2:checked ~ .carousel-track {
+
+#slide-2:checked~.carousel-track {
   transform: translateX(-200%);
   animation: none;
 }
-#slide-3:checked ~ .carousel-track {
+
+#slide-3:checked~.carousel-track {
   transform: translateX(-300%);
   animation: none;
 }
-#slide-4:checked ~ .carousel-track {
+
+#slide-4:checked~.carousel-track {
   transform: translateX(-400%);
   animation: none;
 }
-#slide-5:checked ~ .carousel-track {
+
+#slide-5:checked~.carousel-track {
   transform: translateX(-500%);
   animation: none;
 }
 
 /* Pause animation state */
-.carousel-pause-input:checked ~ .carousel-track {
+.carousel-pause-input:checked~.carousel-track {
   animation-play-state: paused;
+}
+
+/* Show correct nav group based on slide */
+#slide-0:checked~.carousel-nav-group:nth-of-type(1),
+#slide-1:checked~.carousel-nav-group:nth-of-type(2),
+#slide-2:checked~.carousel-nav-group:nth-of-type(3),
+#slide-3:checked~.carousel-nav-group:nth-of-type(4),
+#slide-4:checked~.carousel-nav-group:nth-of-type(5),
+#slide-5:checked~.carousel-nav-group:nth-of-type(6) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.carousel-nav-group {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 /* Navigation button positioning */
@@ -116,101 +166,17 @@
   padding: 0.5rem;
 }
 
-/* Indicator dots container */
+/* Indicators hidden as per request */
 .carousel-indicators {
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Individual indicator styling */
-.carousel-indicator {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-}
-
-.carousel-indicator:hover {
-  background: rgba(255, 255, 255, 0.75);
-}
-
-/* Progress animation for indicators */
-@keyframes indicator-progress {
-  0%, 16.66% {
-    background: white;
-    width: 2rem;
-  }
-  16.67%, 100% {
-    background: rgba(255, 255, 255, 0.5);
-    width: 0.5rem;
-  }
-}
-
-/* Apply progress animation to each indicator with delay */
-.carousel-indicator:nth-child(1) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 0s;
-}
-
-.carousel-indicator:nth-child(2) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 5s;
-}
-
-.carousel-indicator:nth-child(3) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 10s;
-}
-
-.carousel-indicator:nth-child(4) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 15s;
-}
-
-.carousel-indicator:nth-child(5) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 20s;
-}
-
-.carousel-indicator:nth-child(6) {
-  animation: indicator-progress 30s infinite;
-  animation-delay: 25s;
+  display: none;
 }
 
 /* Pause indicator animations when paused */
-.carousel-pause-input:checked ~ .carousel-controls .carousel-indicator {
+.carousel-pause-input:checked~.carousel-controls .carousel-indicator {
   animation-play-state: paused;
 }
 
-/* Play/pause button styling */
+/* Play/pause hidden as per request */
 .carousel-play-pause {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  width: 1.75rem;
-  height: 1.75rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 0.75rem;
-}
-
-.carousel-play-pause:hover {
-  transform: scale(1.1);
-}
-
-/* Toggle play/pause icons */
-.carousel-play-pause .pause-icon {
   display: none;
-}
-
-.carousel-pause-input:checked ~ .carousel-controls .carousel-play-pause .play-icon {
-  display: none;
-}
-
-.carousel-pause-input:checked ~ .carousel-controls .carousel-play-pause .pause-icon {
-  display: block;
 }

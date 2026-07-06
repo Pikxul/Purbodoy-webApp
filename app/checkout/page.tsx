@@ -19,10 +19,12 @@ type BillingForm = {
   pin: string;
 };
 
+import { Skeleton, PageHeaderSkeleton } from "@/components/Skeleton";
+
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const { status } = useSession();
 
   // 🔒 AUTH GUARD
   useEffect(() => {
@@ -31,7 +33,20 @@ export default function CheckoutPage() {
     }
   }, [status, router]);
 
-  if (status === "loading") return null;
+  if (status === "loading") {
+    return (
+      <div className="space-y-10 pb-12">
+        <PageHeaderSkeleton />
+        <div className="grid gap-8 lg:grid-cols-[1.5fr,1fr]">
+          <div className="space-y-8">
+            <Skeleton className="h-48 w-full rounded-2xl" />
+            <Skeleton className="h-32 w-full rounded-2xl" />
+          </div>
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
 
   // 🧾 Billing state
   const [billing, setBilling] = useState<BillingForm>({
@@ -257,10 +272,9 @@ export default function CheckoutPage() {
               <label
                 key={m}
                 className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition cursor-pointer
-                  ${
-                    paymentMethod === m
-                      ? "border-teal-500 bg-teal-50"
-                      : "border-slate-200 hover:bg-slate-50"
+                  ${paymentMethod === m
+                    ? "border-teal-500 bg-teal-50"
+                    : "border-slate-200 hover:bg-slate-50"
                   }`}
               >
                 <input
@@ -282,10 +296,9 @@ export default function CheckoutPage() {
               onClick={handleConfirmBooking}
               disabled={!canConfirm}
               className={`w-full rounded-full px-5 py-2.5 text-sm font-semibold transition
-                ${
-                  canConfirm
-                    ? "bg-gradient-to-r from-sky-500 to-teal-500 text-white shadow-md hover:from-sky-600 hover:to-teal-600"
-                    : "bg-slate-200 text-slate-500 cursor-not-allowed"
+                ${canConfirm
+                  ? "bg-gradient-to-r from-sky-500 to-teal-500 text-white shadow-md hover:from-sky-600 hover:to-teal-600"
+                  : "bg-slate-200 text-slate-500 cursor-not-allowed"
                 }`}
             >
               {isSubmitting ? "Processing..." : "Confirm Booking"}

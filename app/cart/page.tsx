@@ -7,9 +7,10 @@ import { useCart } from "@/components/cart-context";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Skeleton, PageHeaderSkeleton } from "@/components/Skeleton";
 
 export default function CartPage() {
-  const { items, subtotal, updateMembers, removeItem } = useCart();
+  const { items, subtotal, updateMembers, removeItem, isLoading } = useCart();
   const { status } = useSession();
   const router = useRouter();
 
@@ -20,7 +21,21 @@ export default function CartPage() {
     }
   }, [status, router]);
 
-  if (status === "loading") return null;
+  if (status === "loading" || (status === "authenticated" && isLoading)) {
+    return (
+      <div className="space-y-10 pb-12">
+        <PageHeaderSkeleton />
+        <div className="grid gap-6 lg:grid-cols-[2fr,1fr] items-start">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+          <Skeleton className="h-48 w-full rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
 
   // 🌊 EMPTY CART STATE
   if (items.length === 0) {
